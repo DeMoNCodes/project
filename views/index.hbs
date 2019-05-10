@@ -1,0 +1,389 @@
+
+ <script src="tracking.js-master/examples/assets/splines.min.js"></script>
+<!-- <script src="tracking.js-master/examples/assets/stats.min.js"></script> -->
+<!--button type="button" name="button" onclick="magenta()">Magenta</button>
+<button type="button" name="button" onclick="red()">Red</button>
+<button type="button" name="button" onclick="green()">Green</button>
+<button type="button" onclick="letsdraw()" >Start Drawing</button>
+<button type="button" onclick="letsNotdraw()" >Stop Drawing</button>
+<button type="button" name="button"onclick="">Click here to start draw</button>
+<button type="button" name="button">Click here to end draw</button> -->
+
+<button type="button" id="btn" onclick="Openhome()">Home</button> <!--new -->
+
+<button type="button" id="new"  onclick="Openwindow()" >New Window</button> <!--new -->
+
+
+<div class="onoffswitch">
+  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch"   onclick="onoff()"> <!--new -->
+  <label class="onoffswitch-label" for="myonoffswitch">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+  </label>
+</div>
+
+
+<select name="LineColor" id="line">                                <!--new -->
+  <option value="" selected="selected" class="linecolor">Line Colour</option>
+  <option value="Red" style="color:red;" onclick="red()">Red</option>
+  <option value="Green" style="color:green;" onclick="green()">Green</option>
+  <option value="Magenta" style="color:Magenta;" onclick="magenta()">Magenta</option>
+</select>
+
+<select name="GroupBy" id="classfication">                  <!--new -->
+  <option value="" selected="selected" class="shape">Draw Colour</option>
+  <option value="blue">Blue</option>
+</select>
+
+
+
+
+<select name="linesize" id="size" onclick="setlinewidth()">                    <!--new -->
+  <option value="" selected="selected" class="linesize">Line Size</option>
+  <option value="1" id="1" >1</option>
+  <option value="2" id="2">2</option>
+  <option value="3" id="3">3</option>
+  <option value="4" id="4">4</option>
+  <option value="5" id="5">5</option>
+  <option value="6" id="6">6</option>
+  <option value="7" id="7">7</option>
+  <option value="8" id="8">8</option>
+  <option value="9" id="9">9</option>
+  <option value="10" id="10">10</option>
+  <option value="11" id="11">11</option>
+  <option value="12" id="12">12</option>
+</select>
+
+
+<button type="button"  id="save" onclick='capture()'>Save</button>  <!--new -->
+
+
+<div class="draw-frame " id="drawframe"  position="relative">
+ <video style="position: absolute" id="video"   preload autoplay loop muted></video>
+ <canvas style="position: relative"  id="canvas" >
+</div>
+
+<div class="draw-frame " position="relative">
+ <video style="position: absolute" id="video"   preload autoplay loop muted></video>
+ <canvas style="position: relative"  id="canvas" >
+</div>
+
+<script>
+
+var linesize=1;
+function setlinewidth() {
+  console.log("hii");
+  var temp = document.getElementById('size');
+  var x=parseInt(temp.options[temp.selectedIndex].value);
+  console.log(x);
+  linesize = x;
+
+}
+
+function onoff()
+{
+  if( document.getElementById('myonoffswitch').checked == true)
+  {
+    // console.log('true');
+    letsdraw();
+  }
+  else{
+    // console.log('false');
+    letsNotdraw();
+  }
+
+}
+
+
+
+
+function Openhome(){
+ window.open("http://127.0.0.1:3000/","_blank");          <!--new -->
+
+}
+
+function Openwindow(){
+
+   window.open("http://127.0.0.1:3000/draw","_self");         <!--new -->
+
+}
+
+function capture(id,imgURL,fileName)                     /*new */
+{
+  /*var canvas =  document.getElementById("canvas");
+  var image = canvas.toDataURL("image/png").replace("image/png" , "image/octet-stream");
+  window.location.href = image;
+*/
+var canvasElement = document.getElementById("canvas");
+var MIME_TYPE = "image/png";
+var imgURL = canvasElement.toDataURL(MIME_TYPE);
+var dlLink = document.createElement("a");
+dlLink.href = imgURL;
+dlLink.download = fileName;
+dlLink.dataset.downloadurl = [MIME_TYPE,dlLink.download,dlLink.href].join(':');
+document.body.appendChild(dlLink);
+dlLink.click();
+document.body.removeChild(dlLink);
+}
+
+
+//the full code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var time_of_draw = 1;
+
+var gussarray=[[1,2,3]];
+var falsearry=[0,0,0];
+  async function guessnext(t){
+    // gussarray=[];
+    var arr=[[t]];
+    for(let i=0;i<arr.length;i++){
+      for(let j=arr[i].length;j<131;j++){
+        arr[i].push(falsearry);
+        // console.log(arr[i][j]);
+      }
+    }
+    var u=tf.tensor(arr);
+    const model =  await tf.loadLayersModel('./model.json/model.json');
+    for(let i=0;i<10;i++){
+     var x=model.predict(u).toInt();
+     var y=await x.data();
+     gussarray.push([y[0],y[1],y[2]]);
+     u=x;
+   }
+   // console.log(gussarray);
+     // console.log(y[0]+" "+y[1]+" "+y[3]);
+     // return "hii";
+  }
+
+
+
+var isdraw=false;
+var ismouse=true;
+function letsdraw(){
+  isdraw=true;
+  ismouse=false;
+}
+function letsNotdraw(){
+  isdraw=false;
+  ismouse=true;
+}
+
+  var colordraw="magenta";
+  function magenta(){
+    colordraw="magenta";
+    fill();
+  }
+  function red(){
+    colordraw="Red";
+    tracking.ColorTracker.registerColor('Red', function(r, g, b) {
+      if (r < 200 && g > 40 && b < 40) {
+        return true;
+      }
+      return false;
+    });
+    fill();
+  }
+  function green(){
+    colordraw="green"
+    tracking.ColorTracker.registerColor('green', function(r, g, b) {
+      if (r < 40 && g > 220 && b < 40) {
+        return true;
+      }
+      return false;
+    });
+    fill();
+  }
+
+
+var drawlist=[];
+  addEventListener('load', resize);
+  var canvas = document.getElementById("canvas");
+  var video = document.getElementById('video');
+  video.width=window.innerWidth;
+  video.height=window.innerHeight;
+  var context = canvas.getContext("2d");
+  addEventListener('resize', resize);
+  var lastpoint={
+    x:undefined,
+    y:undefined
+  }
+  var gusspoint={
+    x:undefined,
+    y:undefined
+  }
+  var gussdrawpoint={
+    x:undefined,
+    y:undefined
+  }
+  color="red";
+  function draw(x,y){
+    //draw something
+    context.beginPath();
+    context.moveTo(lastpoint.x, lastpoint.y);
+    context.lineTo(x, y);
+    context.width = linesize;
+    context.closePath();
+    context.strokeStyle = color;
+    context.stroke();
+    // lastpoint.x=x;
+    // lastpoint.y=y;
+
+  }
+  function gussdraw(x,y){
+    //draw something
+    context.beginPath();
+    context.moveTo(gussdrawpoint.x, gussdrawpoint.y);
+    context.lineTo(x, y);
+    context.width = 1;
+    context.closePath();
+    context.strokeStyle = 'white';
+    context.stroke();
+    // lastpoint.x=x;
+    // lastpoint.y=y;
+
+  }
+  resize();
+
+  function reality(x){
+    return  x=window.innerWidth-x;
+  }
+  var s=[];
+  var previouslength=0;
+  var pred=1;
+  async function backgroundupdates(){
+    bangroundcanvas();
+    // console.log(Math.abs(x-lastpoint.x),Math.abs(y-lastpoint.y));
+    // if(Math.abs(x-lastpoint.x)>=200||Math.abs(y-lastpoint.y)>=200)
+    // {
+    //   lastpoint.x=x;
+    //   lastpoint.y=y;
+    // }
+    // console.log(drawlist[0].y);
+    // var result=simplify(drawlist,0.8);
+     // console.log();
+
+
+
+      ///doing stupid thing and it is compleatly stupid
+      // if(isdraw && drawlist.length>4){
+
+
+
+    for(let i=1;i<drawlist.length;i++){
+      lastpoint.x=drawlist[i-1].x;
+      lastpoint.y=drawlist[i-1].y;
+
+      await draw(drawlist[i].x,drawlist[i].y);
+
+        // console.log(drawlist[i]);
+      }
+    // lastpoint.x=x;
+    // lastpoint.y=y;
+    gusspoint.x=10;
+    gusspoint.y=10;
+    if(isdraw&&drawlist.length>4&&previouslength<drawlist.length){
+      pred++;
+
+      guessnext([(drawlist[drawlist.length-4].x - drawlist[drawlist.length-1].x),(drawlist[drawlist.length-4].y - drawlist[drawlist.length-1].y),0]);
+      // console.log(gussarray.length);
+      gusspoint.x=drawlist[drawlist.length-1].x;
+      gusspoint.y=drawlist[drawlist.length-1].y;
+      // console.log(gussarray.length);
+      s.push([gusspoint.x,gusspoint.y]);
+      for(let i=gussarray.length>10 ? gussarray.length-10 : 0;i<gussarray.length;i++){
+        // console.log(gussarray[i][0]+"  "+gussarray[i][1]);
+
+        s.push([gussarray[i][0]+gusspoint.x,gussarray[i][1]+gusspoint.y]);
+        gusspoint.x=s[s.length-1][0];
+        gusspoint.y=s[s.length-1][1];
+        // gussdraw(gussarray[i][0]+gusspoint.x,gussarray[i][1]+gusspoint.y);
+      }
+      previouslength=drawlist.length;
+
+    }
+    for(let i=s.length-11;i<s.length&&i>11;i++){
+      if(i%10==0){
+        gussdrawpoint.x=s[i][0];
+        gussdrawpoint.y=s[i][1];
+
+      }else{
+        gussdrawpoint.x=s[i-1][0];
+        gussdrawpoint.y=s[i-1][1];
+
+      }
+        gussdraw(s[i][0],s[i][1]);
+    }
+
+    // // console.log(gussarray.length+"fkjgnkfjgnkfj");
+    //
+    // // }
+    // for(let i=0;i<gussarray.length;i++){
+    //   // s.push()
+    // }
+  }
+  function bangroundcanvas() {
+           context.fillStyle = '#000000';
+           context.fillRect(0, 0, canvas.width, canvas.height);
+       }
+  function resize() {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+	            fill();
+        }
+        //
+	  function fill(){
+      tracking.ColorTracker.registerColor('red', function(r, g, b) {
+        if (r < 50 && g > 200 && b < 50 ) {
+          return true;
+        }
+        return false;
+      });
+   var tracker = new tracking.ColorTracker([colordraw]);
+   tracking.track(video, tracker, { camera: true });
+   bangroundcanvas();
+   tracker.on('track', function(event) {
+      //context.clearRect(0, 0, canvas.width, canvas.height);
+      bangroundcanvas();
+       backgroundupdates();
+        event.data.forEach(function(rect) {
+          if (rect.color === 'custom') {
+            rect.color = tracker.customColor;
+          }
+        x=reality(rect.x);
+        //console.log(x,rect.y);
+         if(isdraw){
+           drawlist.push({x:x , y:rect.y});
+           // console.log(drawlist);
+        }
+         backgroundupdates();
+        //console.log(drawlist);
+       context.strokeStyle = "#fff";
+       context.beginPath();
+       context.arc(x, rect.y, 4, 0, Math.PI * 2, true);
+       context.fillStyle = this.color;
+       context.fill();
+       // console.log(lastpoint.x+""+lastpoint.y);
+       // context.font = '11px Helvetica';
+       // context.fillStyle = "#fff0f0";
+
+     });
+   });
+        }
+
+
+
+</script>

@@ -1,0 +1,24 @@
+
+
+<script>
+addEventListener('load', resize);
+var canvas = document.createElement("canvas");
+document.body.appendChild(canvas);
+var context = canvas.getContext("2d");
+addEventListener('resize', resize);
+function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+	    fill();
+	    cam();
+        }
+	function fill(){
+		 context.fillstyle='rgba(255,255,255)';
+		 context.fillRect(150, 0, canvas.width, canvas.height);	
+	}
+	function cam(){
+		 context.fillStyle = 'red';
+		 context.fillRect(0,0, 100,100 );
+		 console.log(context.fillstyle)
+	}
+</script>

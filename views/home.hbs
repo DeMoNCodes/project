@@ -1,0 +1,58 @@
+
+
+    <header id="head" >
+      <div class="main">
+        <div class="logo">
+          <a href="#"><img  src="./images/Drawing Assistant.png"></a>
+          </div>
+          <ul>
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#About">About</a></li>
+          </ul>
+      </div>
+      <div class="text">
+  			<h1> picture Drawing Assistant </h1>
+  			<h2>Shape Your Imagination's Into a Drawing</h2>
+  		</div>
+      <div class="button">
+        <a href="./draw"  class="btn">Get Started</a>
+      </div>
+    </header>
+
+    <div class="about" id="About">
+  				<img src="./images/bg.jpg" class="abt-img">
+  				<div class="text-block" id="text">
+  					<p ><strong style="color:#00ced1; text-transform: uppercase;">picture Drawing Assistant</strong><br>
+  						Picture Drawing Assistant is a web based product.The system detects the motion of hand or a pointer.<br>
+  					We does not require a board,pen or pencil for Drawing.It guesses the picture that user may draw,and <br>
+  					it helps the user to complete it.This system reduce the effort of a person to draw a picture.
+  				 </p>
+  				</div>
+
+					<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+    </div>
+
+
+
+		<script type="text/javascript">
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 600 || document.documentElement.scrollTop > 200) {
+    document.getElementById("myBtn").style.display = "block";
+  } else {
+    document.getElementById("myBtn").style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
+
+
+
+		</script>

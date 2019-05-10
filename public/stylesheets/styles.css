@@ -1,0 +1,29 @@
+h1{
+  text-align: center;
+  height: 200px;
+  text-shadow: 2px 2px 4px #000000;
+  padding: 60px;
+}
+
+#btn{
+  border-radius: 2px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+#button {
+    position: absolute;
+    top: 50%;
+}
